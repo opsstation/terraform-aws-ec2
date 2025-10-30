@@ -1,22 +1,41 @@
-# Terraform-aws-ec2
+# # 🏗️ Terraform-AWS-Kms
 
-# Terraform AWS Cloud EC2 Module
+[![OpsStation](https://img.shields.io/badge/Made%20by-OpsStation-blue?style=flat-square&logo=terraform)](https://www.opsstation.com)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Terraform](https://img.shields.io/badge/Terraform-1.13%2B-purple.svg?logo=terraform)](#)
+[![CI](https://github.com/OpsStation/terraform-aws-ec2/actions/workflows/ci.yml/badge.svg)](https://github.com/OpsStation/terraform-aws-ec2/actions/workflows/ci.yml)
 
-## Table of Contents
-- [Introduction](#introduction)
-- [Usage](#usage)
-- [Examples](#examples)
-- [License](#license)
-- [Author](#Author)
-- [Inputs](#inputs)
-- [Outputs](#outputs)
+> 🌩️ **A production-grade, reusable AWS Ec2 module by [OpsStation](https://www.opsstation.com)**
+> Designed for reliability, performance, and security — following AWS networking best practices.
+---
 
-## Introduction
-This Terraform module creates an AWS Elastic Compute Cloud (EC2) along with additional configuration options.
-## Usage
-To use this module, you should have Terraform installed and configured for AWS. This module provides the necessary Terraform configuration for creating AWS resources, and you can customize the inputs as needed. Below is an example of how to use this module:
+## 🏢 About OpsStation
 
-# Examples
+**OpsStation** delivers **Cloud & DevOps excellence** for modern teams:
+- 🚀 **Infrastructure Automation** with Terraform, Ansible & Kubernetes
+- 💰 **Cost Optimization** via scaling & right-sizing
+- 🛡️ **Security & Compliance** baked into CI/CD pipelines
+- ⚙️ **Fully Managed Operations** across AWS, Azure, and GCP
+
+> 💡 Need enterprise-grade DevOps automation?
+> 👉 Visit [**www.opsstation.com**](https://www.opsstation.com) or email **hello@opsstation.com**
+
+---
+
+## 🌟 Features
+
+- ✅ Creates and manages **AWS EC2 instances** with customizable configurations
+- ✅ Supports multiple **instance types** (e.g., t2.micro, t3.medium, m5.large)
+- ✅ Optional **EBS volume attachments** for persistent storage
+- ✅ Configurable **security groups**, **key pairs**, and **network interfaces**
+- ✅ Seamless integration with other **AWS services** (e.g., VPC, S3, IAM, CloudWatch)
+- ✅ Supports **auto-start**, **stop**, and **termination protection** options
+- ✅ Compatible with **CloudWatch and CloudTrail** for monitoring and logging
+- ✅ Tags and naming convention managed through the **Labels module**
+- ✅ Seamless integration with other **OpsStation Terraform modules**
+
+---
+## ⚙️ Usage Example
 
 # Example: default
 
@@ -32,7 +51,7 @@ module "ec2" {
   instance_count       = 2
   ami                  = "ami-01dd271720c1ba44f"
   instance_type        = "t2.micro"
-  public_key           = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDmPzqVYDVlaExxJBwbrXT2jG44xMM1U6Z+nCPkjStGj4ayo7Lkz8SzzFbAS0uYaXaTJfc/ZI980BwtLAeWZeaFYDABDROJHS748cTwyByUe1S+yNMrz7wbyeZllQGt6EtnxcOADuMvtBGioTgfXIzJNYb73TlPEUVlTOEDbQd+8oDpO+u7SJFgT+q5OZE5XFyYvp5hHSdLgZhXurRfjvFpqVBwiTojL5o0Q2xqXxTFOFfdoDKcjbMwFwr4vdJ5Edqqa2gcl9nRtCL4vo0m/St0ekbZ3yT9h3gRgP3+u9L0rc0f4XZxNW3b0ljWC1dEd/pAVw1k1y1xRnYKKwNaT6nZcKqFawT/G4S9fj6LrD+RPJsEgMXcIaAcGeidQolVZce4fWyAJc5Dx0ALKTkHNN7NyyTXopuK63YJ5lUEwWOYc6q9l/xM49i9hdpMD0TafqM0rWXFY3ALR9z/U0CMWwtlQ33iInGEYRqd+wupm48nuHII359uNe/GKhjqCLU5K4E= rahul@rahul"
+  public_key           = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDhO7EpkyvNOP/e8G25GR0n1GkhQrIxxxxxxxxxxxxxxxxxxxxxxxxxxxxGzLTdhEQnGFCFtbg+NPQ== vinod.yadav"
   subnet_ids           = tolist(module.public_subnets.public_subnet_id)
   iam_instance_profile = module.iam-role.name
 
@@ -73,7 +92,7 @@ module "spot-ec2" {
   ssh_allowed_ports = [22]
 
   #Keypair
-  public_key = "ssh-ejllt6FE/X7jf/RubFCUm0zFeB7762gMVytflmxYE/e8fwsqnnabhgdcbvnjOOgvdmLNbp0sES+qEdv9C8E8b61xbdhPMTFSd+1nuUG57KoMORsZoHGptg7i/QXs32pqlxftTqEschCpitGuBN4NxwybES6FdkYLXFZYWiv7uuujVl"
+  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDhO7EpkyvNOP/e8G25GR0n1GkhQrIxxxxxxxxxxxxxxxxxxxxxxxxxxxxGzLTdhEQnGFCFtbg+NPQ== vinod.yadav"
 
   # Spot-instance
   spot_price                          = "0.3"
@@ -106,37 +125,55 @@ module "spot-ec2" {
 }
 ```
 
-## Examples
-For detailed examples on how to use this module, please refer to the [examples](https://github.com/opsstation/terraform-aws-ec2/tree/master/example) directory within this repository.
+### 🔐 Outputs (AWS EC2 Module)
 
-## License
-This Terraform module is provided under the **MIT** License. Please see the [LICENSE](https://github.com/opsstation/terraform-aws-ec2/blob/master/LICENSE) file for more details.
+| Name             | Description                                                                 |
+|------------------|------------------------------------------------------------------------------|
+| `id`             | The unique identifier (ID) of the created **EC2 instance**.                  |
+| `arn`            | The ARN (Amazon Resource Name) of the created **EC2 instance**.              |
+| `instance_state` | The current **state** of the EC2 instance (e.g., running, stopped).          |
+| `private_ip`     | The **private IP address** assigned to the EC2 instance.                     |
+| `public_ip`      | The **public IP address** assigned to the EC2 instance (if applicable).      |
+| `subnet_id`      | The ID of the **subnet** where the instance is launched.                     |
+| `vpc_security_group_ids` | The list of associated **security group IDs**.                        |
+| `availability_zone` | The **Availability Zone** where the instance is running.                  |
+| `key_name`       | The **SSH key pair name** associated with the EC2 instance.                  |
+| `tags`           | A mapping of **tags** assigned to the EC2 resources.                         |
 
-## Author
-Your Name
-Replace **MIT** and **opsstation** with the appropriate license and your information. Feel free to expand this README with additional details or usage instructions as needed for your specific use case.
+### ☁️ Tag Normalization Rules (AWS)
+
+| Cloud | Case      | Allowed Characters | Example                            |
+|--------|-----------|------------------|------------------------------------|
+| **AWS** | TitleCase | Any              | `Name`, `Environment`, `CostCenter` |
+
+---
+
+### 💙 Maintained by [OpsStation](https://www.opsstation.com)
+> OpsStation — Simplifying Cloud, Securing Scale.
 
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.5.5 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 5.13.1 |
-| <a name="requirement_tls"></a> [tls](#requirement\_tls) | 3.0.0 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.13.3 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 6.13.0 |
+| <a name="requirement_local"></a> [local](#requirement\_local) | >= 2.0.0 |
+| <a name="requirement_tls"></a> [tls](#requirement\_tls) | >= 4.0.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 5.13.1 |
-| <a name="provider_tls"></a> [tls](#provider\_tls) | 3.0.0 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 6.13.0 |
+| <a name="provider_local"></a> [local](#provider\_local) | >= 2.0.0 |
+| <a name="provider_tls"></a> [tls](#provider\_tls) | >= 4.0.0 |
 
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_labels"></a> [labels](#module\_labels) | git::https://github.com/opsstation/terraform-aws-labels.git | v1.0.0 |
+| <a name="module_labels"></a> [labels](#module\_labels) | opsstation/labels/multicloud | 1.0.0 |
 
 ## Resources
 
@@ -157,7 +194,8 @@ Replace **MIT** and **opsstation** with the appropriate license and your informa
 | [aws_security_group_rule.ssh_ingress](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
 | [aws_spot_instance_request.default](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/spot_instance_request) | resource |
 | [aws_volume_attachment.default](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/volume_attachment) | resource |
-| [tls_private_key.default](https://registry.terraform.io/providers/hashicorp/tls/3.0.0/docs/resources/private_key) | resource |
+| [local_file.private_key](https://registry.terraform.io/providers/hashicorp/local/latest/docs/resources/file) | resource |
+| [tls_private_key.default](https://registry.terraform.io/providers/hashicorp/tls/latest/docs/resources/private_key) | resource |
 | [aws_ami.ubuntu](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ami) | data source |
 | [aws_iam_policy_document.kms](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 
@@ -167,13 +205,16 @@ Replace **MIT** and **opsstation** with the appropriate license and your informa
 |------|-------------|------|---------|:--------:|
 | <a name="input_algorithm"></a> [algorithm](#input\_algorithm) | Name of the algorithm to use when generating the private key. Currently-supported values are: RSA, ECDSA, ED25519. | `string` | `"RSA"` | no |
 | <a name="input_alias"></a> [alias](#input\_alias) | The display name of the alias. The name must start with the word `alias` followed by a forward slash. | `string` | `""` | no |
+| <a name="input_allow_overwrite"></a> [allow\_overwrite](#input\_allow\_overwrite) | Allow creation of this record in Terraform to overwrite an existing record. | `bool` | `false` | no |
 | <a name="input_allowed_ip"></a> [allowed\_ip](#input\_allowed\_ip) | List of allowed ip. | `list(any)` | <pre>[<br>  "0.0.0.0/0"<br>]</pre> | no |
 | <a name="input_allowed_ports"></a> [allowed\_ports](#input\_allowed\_ports) | List of allowed ingress ports | `list(any)` | <pre>[<br>  80,<br>  443<br>]</pre> | no |
 | <a name="input_ami"></a> [ami](#input\_ami) | The AMI to use for the instance. | `string` | `""` | no |
 | <a name="input_assign_eip_address"></a> [assign\_eip\_address](#input\_assign\_eip\_address) | Assign an Elastic IP address to the instance. | `bool` | `true` | no |
 | <a name="input_associate_public_ip_address"></a> [associate\_public\_ip\_address](#input\_associate\_public\_ip\_address) | Associate a public IP address with the instance. | `bool` | `true` | no |
+| <a name="input_attributes"></a> [attributes](#input\_attributes) | Additional attributes (e.g. `1`). | `list(string)` | `[]` | no |
 | <a name="input_availability_zone"></a> [availability\_zone](#input\_availability\_zone) | AZ to start the instance in | `string` | `null` | no |
 | <a name="input_capacity_reservation_specification"></a> [capacity\_reservation\_specification](#input\_capacity\_reservation\_specification) | Describes an instance's Capacity Reservation targeting option | `any` | `{}` | no |
+| <a name="input_cidr_routing_policy"></a> [cidr\_routing\_policy](#input\_cidr\_routing\_policy) | CIDR routing policy details. | `map(any)` | `{}` | no |
 | <a name="input_cpu_core_count"></a> [cpu\_core\_count](#input\_cpu\_core\_count) | Sets the number of CPU cores for an instance. | `string` | `null` | no |
 | <a name="input_cpu_credits"></a> [cpu\_credits](#input\_cpu\_credits) | The credit option for CPU usage. Can be `standard` or `unlimited`. T3 instances are launched as unlimited by default. T2 instances are launched as standard by default. | `string` | `"standard"` | no |
 | <a name="input_cpu_options"></a> [cpu\_options](#input\_cpu\_options) | Defines CPU options to apply to the instance at launch time. | `any` | `{}` | no |
@@ -208,7 +249,10 @@ Replace **MIT** and **opsstation** with the appropriate license and your informa
 | <a name="input_enclave_options_enabled"></a> [enclave\_options\_enabled](#input\_enclave\_options\_enabled) | Whether Nitro Enclaves will be enabled on the instance. Defaults to `false` | `bool` | `null` | no |
 | <a name="input_environment"></a> [environment](#input\_environment) | Environment (e.g. `prod`, `dev`, `staging`). | `string` | `""` | no |
 | <a name="input_ephemeral_block_device"></a> [ephemeral\_block\_device](#input\_ephemeral\_block\_device) | Customize Ephemeral (also known as Instance Store) volumes on the instance. | `list(any)` | `[]` | no |
+| <a name="input_final_snapshot"></a> [final\_snapshot](#input\_final\_snapshot) | If true, a snapshot will be created before volume deletion (default is false) | `bool` | `false` | no |
+| <a name="input_force_detach"></a> [force\_detach](#input\_force\_detach) | Force detach the volume (default is false) | `bool` | `false` | no |
 | <a name="input_get_password_data"></a> [get\_password\_data](#input\_get\_password\_data) | If true, wait for password data to become available and retrieve it | `bool` | `null` | no |
+| <a name="input_health_check_id"></a> [health\_check\_id](#input\_health\_check\_id) | The health check ID for the DNS record. | `string` | `null` | no |
 | <a name="input_hibernation"></a> [hibernation](#input\_hibernation) | hibernate an instance, Amazon EC2 signals the operating system to perform hibernation. | `bool` | `false` | no |
 | <a name="input_host_id"></a> [host\_id](#input\_host\_id) | The Id of a dedicated host that the instance will be assigned to. Use when an instance is to be launched on a specific dedicated host. | `string` | `null` | no |
 | <a name="input_hostname"></a> [hostname](#input\_hostname) | DNS records to create. | `string` | `"ec2"` | no |
@@ -239,6 +283,7 @@ Replace **MIT** and **opsstation** with the appropriate license and your informa
 | <a name="input_multi_attach_enabled"></a> [multi\_attach\_enabled](#input\_multi\_attach\_enabled) | Specifies whether to enable Amazon EBS Multi-Attach. Multi-Attach is supported on io1 and io2 volumes. | `bool` | `false` | no |
 | <a name="input_name"></a> [name](#input\_name) | Name  (e.g. `app` or `cluster`). | `string` | `""` | no |
 | <a name="input_network_interface"></a> [network\_interface](#input\_network\_interface) | Customize network interfaces to be attached at instance boot time | `list(map(string))` | `[]` | no |
+| <a name="input_outpost_arn"></a> [outpost\_arn](#input\_outpost\_arn) | Optional ARN of the Outpost | `string` | `""` | no |
 | <a name="input_placement_group"></a> [placement\_group](#input\_placement\_group) | The Placement Group to start the instance in. | `string` | `""` | no |
 | <a name="input_private_ip"></a> [private\_ip](#input\_private\_ip) | Private IP address to associate with the instance in a VPC | `string` | `null` | no |
 | <a name="input_protocol"></a> [protocol](#input\_protocol) | The protocol. If not icmp, tcp, udp, or all use the. | `string` | `"tcp"` | no |
@@ -247,11 +292,14 @@ Replace **MIT** and **opsstation** with the appropriate license and your informa
 | <a name="input_root_block_device"></a> [root\_block\_device](#input\_root\_block\_device) | Customize details about the root block device of the instance. See Block Devices below for details. | `list(any)` | `[]` | no |
 | <a name="input_rsa_bits"></a> [rsa\_bits](#input\_rsa\_bits) | When algorithm is RSA, the size of the generated RSA key, in bits (default: 2048). | `number` | `4096` | no |
 | <a name="input_secondary_private_ips"></a> [secondary\_private\_ips](#input\_secondary\_private\_ips) | A list of secondary private IPv4 addresses to assign to the instance's primary network interface (eth0) in a VPC. Can only be assigned to the primary network interface (eth0) attached at instance creation, not a pre-existing network interface i.e. referenced in a `network_interface block` | `list(string)` | `null` | no |
+| <a name="input_set_identifier"></a> [set\_identifier](#input\_set\_identifier) | Unique identifier to differentiate records with routing policies. | `string` | `null` | no |
 | <a name="input_sg_description"></a> [sg\_description](#input\_sg\_description) | The security group description. | `string` | `"Instance default security group (only egress access is allowed)."` | no |
 | <a name="input_sg_egress_description"></a> [sg\_egress\_description](#input\_sg\_egress\_description) | Description of the egress and ingress rule | `string` | `"Description of the rule."` | no |
 | <a name="input_sg_egress_ipv6_description"></a> [sg\_egress\_ipv6\_description](#input\_sg\_egress\_ipv6\_description) | Description of the egress\_ipv6 rule | `string` | `"Description of the rule."` | no |
 | <a name="input_sg_ids"></a> [sg\_ids](#input\_sg\_ids) | of the security group id. | `list(any)` | `[]` | no |
 | <a name="input_sg_ingress_description"></a> [sg\_ingress\_description](#input\_sg\_ingress\_description) | Description of the ingress rule | `string` | `"Description of the ingress rule use elasticache."` | no |
+| <a name="input_skip_destroy"></a> [skip\_destroy](#input\_skip\_destroy) | Skip destroy and only remove the attachment from Terraform state (default is false) | `bool` | `false` | no |
+| <a name="input_snapshot_id"></a> [snapshot\_id](#input\_snapshot\_id) | Optional snapshot to base the EBS volume off of | `string` | `""` | no |
 | <a name="input_source_dest_check"></a> [source\_dest\_check](#input\_source\_dest\_check) | Controls if traffic is routed to the instance when the destination address does not match the instance. Used for NAT or VPNs. | `bool` | `true` | no |
 | <a name="input_spot_block_duration_minutes"></a> [spot\_block\_duration\_minutes](#input\_spot\_block\_duration\_minutes) | The required duration for the Spot instances, in minutes. This value must be a multiple of 60 (60, 120, 180, 240, 300, or 360) | `number` | `null` | no |
 | <a name="input_spot_instance_count"></a> [spot\_instance\_count](#input\_spot\_instance\_count) | Number of instances to launch. | `number` | `0` | no |
@@ -268,6 +316,7 @@ Replace **MIT** and **opsstation** with the appropriate license and your informa
 | <a name="input_ssh_allowed_ports"></a> [ssh\_allowed\_ports](#input\_ssh\_allowed\_ports) | List of allowed ingress ports | `list(any)` | `[]` | no |
 | <a name="input_ssh_protocol"></a> [ssh\_protocol](#input\_ssh\_protocol) | The protocol. If not icmp, tcp, udp, or all use the. | `string` | `"tcp"` | no |
 | <a name="input_ssh_sg_ingress_description"></a> [ssh\_sg\_ingress\_description](#input\_ssh\_sg\_ingress\_description) | Description of the ingress rule | `string` | `"Description of the ingress rule use elasticache."` | no |
+| <a name="input_stop_instance_before_detaching"></a> [stop\_instance\_before\_detaching](#input\_stop\_instance\_before\_detaching) | Stop instance before detaching the volume (default is false) | `bool` | `false` | no |
 | <a name="input_subnet_ids"></a> [subnet\_ids](#input\_subnet\_ids) | A list of VPC Subnet IDs to launch in. | `list(string)` | `[]` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | Additional tags (e.g. map(`BusinessUnit`,`XYZ`). | `map(any)` | `{}` | no |
 | <a name="input_tenancy"></a> [tenancy](#input\_tenancy) | The tenancy of the instance (if the instance is running in a VPC). An instance with a tenancy of dedicated runs on single-tenant hardware. The host tenancy is not supported for the import-instance command. | `string` | `"default"` | no |
@@ -285,16 +334,23 @@ Replace **MIT** and **opsstation** with the appropriate license and your informa
 |------|-------------|
 | <a name="output_arn"></a> [arn](#output\_arn) | The ARN of the instance. |
 | <a name="output_az"></a> [az](#output\_az) | The availability zone of the instance. |
+| <a name="output_ebs_volume_ids"></a> [ebs\_volume\_ids](#output\_ebs\_volume\_ids) | The list of EBS volume IDs |
 | <a name="output_instance_id"></a> [instance\_id](#output\_instance\_id) | The instance ID. |
 | <a name="output_ipv6_addresses"></a> [ipv6\_addresses](#output\_ipv6\_addresses) | A list of assigned IPv6 addresses. |
 | <a name="output_key_name"></a> [key\_name](#output\_key\_name) | The key name of the instance. |
+| <a name="output_kms_tags_debug"></a> [kms\_tags\_debug](#output\_kms\_tags\_debug) | n/a |
 | <a name="output_name"></a> [name](#output\_name) | Name of SSH key. |
 | <a name="output_placement_group"></a> [placement\_group](#output\_placement\_group) | The placement group of the instance. |
 | <a name="output_private_ip"></a> [private\_ip](#output\_private\_ip) | Private IP of instance. |
+| <a name="output_private_key_pem"></a> [private\_key\_pem](#output\_private\_key\_pem) | The private key PEM (if generated). |
 | <a name="output_public_ip"></a> [public\_ip](#output\_public\_ip) | Public IP of instance (or EIP). |
+| <a name="output_route53_record_health_check"></a> [route53\_record\_health\_check](#output\_route53\_record\_health\_check) | The health check ID for the Route 53 DNS record. |
+| <a name="output_route53_record_name"></a> [route53\_record\_name](#output\_route53\_record\_name) | The name of the Route 53 DNS record. |
+| <a name="output_route53_record_set_identifier"></a> [route53\_record\_set\_identifier](#output\_route53\_record\_set\_identifier) | The unique identifier for the DNS record. |
 | <a name="output_spot_bid_status"></a> [spot\_bid\_status](#output\_spot\_bid\_status) | The current bid status of the Spot Instance Request |
 | <a name="output_spot_instance_id"></a> [spot\_instance\_id](#output\_spot\_instance\_id) | The instance ID. |
 | <a name="output_subnet_id"></a> [subnet\_id](#output\_subnet\_id) | The EC2 subnet ID. |
 | <a name="output_tags"></a> [tags](#output\_tags) | The instance ID. |
+| <a name="output_volume_attachment_ids"></a> [volume\_attachment\_ids](#output\_volume\_attachment\_ids) | The list of volume attachment IDs |
 | <a name="output_vpc_security_group_ids"></a> [vpc\_security\_group\_ids](#output\_vpc\_security\_group\_ids) | The associated security groups in non-default VPC. |
 <!-- END_TF_DOCS -->

@@ -2,12 +2,14 @@
 ## Labels module callled that will be used for naming and tags.
 ##==================================================================================
 module "labels" {
-  source      = "git::https://github.com/opsstation/terraform-aws-labels.git?ref=v1.0.0"
+  source      = "opsstation/labels/multicloud"
+  version     = "1.0.0"
   name        = var.name
-  repository  = var.repository
   environment = var.environment
+  repository  = var.repository
   managedby   = var.managedby
   label_order = var.label_order
+  attributes  = var.attributes
 }
 
 locals {
@@ -29,15 +31,27 @@ data "aws_ami" "ubuntu" {
 resource "tls_private_key" "default" {
   count     = var.enable && var.public_key == "" && var.enable_key_pair ? 1 : 0
   algorithm = var.algorithm
-  rsa_bits  = var.rsa_bits
+  rsa_bits  = var.algorithm == "RSA" ? var.rsa_bits : null
 
 }
 
+#-----------------------------------------------------------
+# Create or Import AWS EC2 Key Pair
+#-----------------------------------------------------------
 resource "aws_key_pair" "default" {
   count      = var.enable && var.enable_key_pair == true ? 1 : 0
   key_name   = format("%s-key-pair", module.labels.id)
   public_key = var.public_key == "" ? join("", tls_private_key.default[*].public_key_openssh) : var.public_key
   tags       = module.labels.tags
+}
+
+#-----------------------------------------------------------
+# Generate a new TLS Private Key if public_key is not provided
+#-----------------------------------------------------------
+resource "local_file" "private_key" {
+  count    = var.enable && var.enable_key_pair && var.public_key == "" ? 1 : 0
+  content  = tls_private_key.default[0].private_key_pem
+  filename = "${path.module}/ec2_key.pem"
 }
 
 
@@ -117,9 +131,16 @@ resource "aws_kms_key" "default" {
   customer_master_key_spec = var.customer_master_key_spec
   policy                   = data.aws_iam_policy_document.kms.json
   multi_region             = var.kms_multi_region
-  tags                     = module.labels.tags
+  tags = {
+    for k, v in module.labels.tags :
+    k => v if(
+      v != "" &&
+      !startswith(k, "aws:") &&
+      can(regex("^[a-zA-Z0-9\\s_\\.:/=+\\-@]+$", k)) &&
+      can(regex("^[a-zA-Z0-9\\s_\\.:/=+\\-@]+$", v))
+    )
+  }
 }
-
 resource "aws_kms_alias" "default" {
   count         = var.enable && var.kms_key_enabled && var.kms_key_id == "" ? 1 : 0
   name          = coalesce(var.alias, format("alias/%v", module.labels.id))
@@ -159,9 +180,6 @@ resource "aws_instance" "default" {
   placement_group                      = var.placement_group
   tenancy                              = var.tenancy
   host_id                              = var.host_id
-  cpu_core_count                       = var.cpu_core_count
-  cpu_threads_per_core                 = var.cpu_threads_per_core
-  user_data                            = var.user_data
   user_data_base64                     = var.user_data_base64
   user_data_replace_on_change          = var.user_data_replace_on_change
   availability_zone                    = var.availability_zone
@@ -323,6 +341,8 @@ resource "aws_ebs_volume" "default" {
   size                 = var.ebs_volume_size
   iops                 = local.ebs_iops
   type                 = var.ebs_volume_type
+  snapshot_id          = var.snapshot_id
+  outpost_arn          = var.outpost_arn
   multi_attach_enabled = var.multi_attach_enabled
   encrypted            = true
   kms_key_id           = var.kms_key_id == "" ? join("", aws_kms_key.default[*].arn) : var.kms_key_id
@@ -331,18 +351,23 @@ resource "aws_ebs_volume" "default" {
     },
     var.tags
   )
-  depends_on = [aws_instance.default]
+  final_snapshot = var.final_snapshot
+  depends_on     = [aws_instance.default]
 }
+
 
 ##=============================================================================
 ## Provides an AWS EBS Volume Attachment as a top level resource, to attach and detach volumes from AWS Instances.
 ##=============================================================================
 resource "aws_volume_attachment" "default" {
-  count       = var.enable && var.ebs_volume_enabled ? var.instance_count : 0
-  device_name = element(var.ebs_device_name, count.index)
-  volume_id   = element(aws_ebs_volume.default[*].id, count.index)
-  instance_id = element(aws_instance.default[*].id, count.index)
-  depends_on  = [aws_instance.default]
+  count                          = var.enable && var.ebs_volume_enabled ? var.instance_count : 0
+  device_name                    = element(var.ebs_device_name, count.index)
+  volume_id                      = element(aws_ebs_volume.default[*].id, count.index)
+  instance_id                    = element(aws_instance.default[*].id, count.index)
+  force_detach                   = var.force_detach
+  skip_destroy                   = var.skip_destroy
+  stop_instance_before_detaching = var.stop_instance_before_detaching
+  depends_on                     = [aws_instance.default]
 }
 
 ##==============================================================================
@@ -370,12 +395,12 @@ resource "aws_route53_record" "default" {
 ## Below Provides an EC2 Spot Instance Request resource. This allows instances to be requested on the spot market..
 ##===================================================================================
 resource "aws_spot_instance_request" "default" {
-  count                                = var.enable && var.spot_instance_enabled ? var.spot_instance_count : 0
-  spot_price                           = var.spot_price
-  wait_for_fulfillment                 = var.spot_wait_for_fulfillment
-  spot_type                            = var.spot_type
-  launch_group                         = var.spot_launch_group
-  block_duration_minutes               = var.spot_block_duration_minutes
+  count                = var.enable && var.spot_instance_enabled ? var.spot_instance_count : 0
+  spot_price           = var.spot_price
+  wait_for_fulfillment = var.spot_wait_for_fulfillment
+  spot_type            = var.spot_type
+  launch_group         = var.spot_launch_group
+  #  block_duration_minutes               = var.spot_block_duration_minutes
   instance_interruption_behavior       = var.spot_instance_interruption_behavior
   valid_until                          = var.spot_valid_until
   valid_from                           = var.spot_valid_from
@@ -392,9 +417,6 @@ resource "aws_spot_instance_request" "default" {
   placement_group                      = var.placement_group
   tenancy                              = var.tenancy
   host_id                              = var.host_id
-  cpu_core_count                       = var.cpu_core_count
-  cpu_threads_per_core                 = var.cpu_threads_per_core
-  user_data                            = var.user_data
   user_data_base64                     = var.user_data_base64
   user_data_replace_on_change          = var.user_data_replace_on_change
   availability_zone                    = var.availability_zone

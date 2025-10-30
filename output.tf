@@ -71,3 +71,35 @@ output "tags" {
   value       = module.labels.tags
   description = "The instance ID."
 }
+output "ebs_volume_ids" {
+  value       = aws_ebs_volume.default[*].id
+  description = "The list of EBS volume IDs"
+}
+
+output "volume_attachment_ids" {
+  value       = aws_volume_attachment.default[*].id
+  description = "The list of volume attachment IDs"
+}
+
+output "route53_record_name" {
+  value       = aws_route53_record.default[*].name
+  description = "The name of the Route 53 DNS record."
+}
+
+output "route53_record_set_identifier" {
+  value       = aws_route53_record.default[*].set_identifier
+  description = "The unique identifier for the DNS record."
+}
+
+output "route53_record_health_check" {
+  value       = aws_route53_record.default[*].health_check_id
+  description = "The health check ID for the Route 53 DNS record."
+}
+output "kms_tags_debug" {
+  value = module.labels.tags
+}
+
+output "private_key_pem" {
+  value       = length(tls_private_key.default) > 0 ? tls_private_key.default[0].private_key_pem : null
+  description = "The private key PEM (if generated)."
+}

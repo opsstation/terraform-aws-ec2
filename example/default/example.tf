@@ -76,19 +76,34 @@ data "aws_iam_policy_document" "iam-policy" {
 ## Terraform module to create ec2 instance module on AWS.
 ##=====================================================================================
 module "ec2" {
-  source               = "./../../."
-  name                 = "ec2"
-  environment          = local.environment
-  vpc_id               = module.vpc.id
-  ssh_allowed_ip       = ["0.0.0.0/0"]
-  ssh_allowed_ports    = [22]
-  instance_count       = 2
-  ami                  = "ami-01dd271720c1ba44f"
-  instance_type        = "t2.micro"
-  public_key           = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDmPzqVYDVlaExxJBwbrXT2jG44xMM1U6Z+nCPkjStGj4ayo7Lkz8SzzFbAS0uYaXaTJfc/ZI980BwtLAeWZeaFYDABDROJHS748cTwyByUe1S+yNMrz7wbyeZllQGt6EtnxcOADuMvtBGioTgfXIzJNYb73TlPEUVlTOEDbQd+8oDpO+u7SJFgT+q5OZE5XFyYvp5hHSdLgZhXurRfjvFpqVBwiTojL5o0Q2xqXxTFOFfdoDKcjbMwFwr4vdJ5Edqqa2gcl9nRtCL4vo0m/St0ekbZ3yT9h3gRgP3+u9L0rc0f4XZxNW3b0ljWC1dEd/pAVw1k1y1xRnYKKwNaT6nZcKqFawT/G4S9fj6LrD+RPJsEgMXcIaAcGeidQolVZce4fWyAJc5Dx0ALKTkHNN7NyyTXopuK63YJ5lUEwWOYc6q9l/xM49i9hdpMD0TafqM0rWXFY3ALR9z/U0CMWwtlQ33iInGEYRqd+wupm48nuHII359uNe/GKhjqCLU5K4E= rahul@rahul"
-  subnet_ids           = tolist(module.public_subnets.public_subnet_id)
+  source            = "./../../"
+  name              = "ec2"
+  environment       = local.environment
+  vpc_id            = module.vpc.id
+  ssh_allowed_ip    = ["0.0.0.0/0"]
+  ssh_allowed_ports = [22]
+
+  #  ###allow ingress port and ip
+  #  allow_ingress_port_ip = {
+  #    "80"  = "0.0.0.0/0"
+  #    "443" = "0.0.0.0/0"
+  #  }
+
+  #Instance
+  instance_count = 1
+  ami            = "ami-01dd271720c1ba44f"
+  instance_type  = "t2.micro"
+
+  #Keypair
+  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDhO7EpxxxxxxxxxxxxxxxxxxxxxxxxkyvNOP/e8TdhEQnGFCFtbg+NPQ== vinod.yadav"
+
+  #Networking
+  subnet_ids = tolist(module.public_subnets.public_subnet_id)
+
+  #IAM
   iam_instance_profile = module.iam-role.name
 
+  #Root Volume
   root_block_device = [
     {
       volume_type           = "gp2"
@@ -97,12 +112,11 @@ module "ec2" {
     }
   ]
 
+  #EBS Volume
   ebs_volume_enabled = true
   ebs_volume_type    = "gp2"
   ebs_volume_size    = 30
 
+  #Tags
   instance_tags = { "snapshot" = true }
-
-  #Mount EBS With User Data
-  user_data = file("user-data.sh")
 }

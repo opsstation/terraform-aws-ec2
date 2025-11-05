@@ -15,7 +15,11 @@ variable "repository" {
     error_message = "The module-repo value must be a valid Git repo link."
   }
 }
-
+variable "attributes" {
+  type        = list(string)
+  default     = []
+  description = "Additional attributes (e.g. `1`)."
+}
 variable "environment" {
   type        = string
   default     = ""
@@ -116,7 +120,7 @@ variable "root_block_device" {
   default     = []
   description = "Customize details about the root block device of the instance. See Block Devices below for details."
 }
-
+# tflint-ignore: terraform_unused_declarations
 variable "user_data" {
   type        = string
   default     = ""
@@ -214,14 +218,30 @@ variable "network_interface" {
   type        = list(map(string))
   default     = []
 }
+variable "final_snapshot" {
+  type        = bool
+  default     = false
+  description = "If true, a snapshot will be created before volume deletion (default is false)"
+}
 
+variable "snapshot_id" {
+  type        = string
+  default     = ""
+  description = "Optional snapshot to base the EBS volume off of"
+}
+
+variable "outpost_arn" {
+  type        = string
+  default     = ""
+  description = "Optional ARN of the Outpost"
+}
 
 variable "host_id" {
   type        = string
   default     = null
   description = "The Id of a dedicated host that the instance will be assigned to. Use when an instance is to be launched on a specific dedicated host."
 }
-
+# tflint-ignore: terraform_unused_declarations
 variable "cpu_core_count" {
   type        = string
   default     = null
@@ -245,10 +265,50 @@ variable "instance_tags" {
   default     = {}
   description = "Instance tags."
 }
+variable "force_detach" {
+  type        = bool
+  default     = false
+  description = "Force detach the volume (default is false)"
+}
+
+variable "skip_destroy" {
+  type        = bool
+  default     = false
+  description = "Skip destroy and only remove the attachment from Terraform state (default is false)"
+}
+variable "stop_instance_before_detaching" {
+  type        = bool
+  default     = false
+  description = "Stop instance before detaching the volume (default is false)"
+}
 variable "spot_instance_tags" {
   type        = map(any)
   default     = {}
   description = "Instance tags."
+}
+# tflint-ignore: terraform_unused_declarations
+variable "set_identifier" {
+  type        = string
+  default     = null
+  description = "Unique identifier to differentiate records with routing policies."
+}
+# tflint-ignore: terraform_unused_declarations
+variable "health_check_id" {
+  type        = string
+  default     = null
+  description = "The health check ID for the DNS record."
+}
+# tflint-ignore: terraform_unused_declarations
+variable "allow_overwrite" {
+  type        = bool
+  default     = false
+  description = "Allow creation of this record in Terraform to overwrite an existing record."
+}
+# tflint-ignore: terraform_unused_declarations
+variable "cidr_routing_policy" {
+  type        = map(any)
+  default     = {}
+  description = "CIDR routing policy details."
 }
 
 variable "dns_zone_id" {
@@ -527,7 +587,7 @@ variable "spot_launch_group" {
   default     = null
   description = "A launch group is a group of spot instances that launch together and terminate together. If left empty instances are launched and terminated individually"
 }
-
+# tflint-ignore: terraform_unused_declarations
 variable "spot_block_duration_minutes" {
   type        = number
   default     = null
@@ -551,7 +611,7 @@ variable "spot_valid_from" {
   default     = null
   description = "The start date and time of the request, in UTC RFC3339 format(for example, YYYY-MM-DDTHH:MM:SSZ)"
 }
-
+# tflint-ignore: terraform_unused_declarations
 variable "cpu_threads_per_core" {
   description = "Sets the number of CPU threads per core for an instance (has no effect unless cpu_core_count is also set)"
   type        = number

@@ -52,7 +52,7 @@ module "spot-ec2" {
   ssh_allowed_ports = [22]
 
   #Keypair
-  public_key = "ssh-ejllt6FE/X7jf/RubFCUm0zFeB7762gMVytflmxYE/e8fwsqnnabhgdcbvnjOOgvdmLNbp0sES+qEdv9C8E8b61xbdhPMTFSd+1nuUG57KoMORsZoHGptg7i/QXs32pqlxftTqEschCpitGuBN4NxwybES6FdkYLXFZYWiv7uuujVl"
+  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDhO7EpkyvNOP/e8G25GR0n1GkhQrI7oLsDN5GSIVWA9vW2CjJHUKxz+pVraAdwxTe0cLp9vdJPiy+rlo4PO0H1hwYJV9bcw+j2TlG++e6Ct/ZSrY0y4WJk2VF/YoDDYlweDiy5+u9e90lSTRRLo4qwltxkGrlOxtvP8+es2lzA7pDbQjgineZqiG58aoWYY2p/G+ROfRMvVtXo7+2inVuQafh55R8uJbb0qECAG0JGNtszdXYxleivOkKMugSbKjpcwtaA5swy0w+6ndcsJqfOCNGi74wyzZy7wC4/A3RNlQnOhRM+9ji89RmT9vLwsa1cXvcNjSk3NfpL7OZWNZ2C+TjFjuTwlIW9NdUqlKrbrQu34eP2tRTodE4/BXpHDO3kwz/885fxqo7occP/YNmloDQ8XqN5npTpVKsB9vSoQz3SprGF8tdn7D4GOaYew1lloqZ8KNC+ITMguMgIo2fhbn7xjvMp2M/3/GhZVs19xu0rGxpxqiV9HQefiKbtyiTbYCPqFhQva/C8YK3P8MD4m3Nj3DuAvkOwQNIsXPWTlBKnB+SEgZgFgxD6G10sgL9uUgSglZ7bH6cpjJyYJoFj5BkLLYVuL6CthmzMjdn5C23gMzll8MVAHWs1gSld1nHY+k3XfQ7A78Vyu99MZKWpmqGzLTdhEQnGFCFtbg+NPQ== opsstation@opsstation"
 
   # Spot-instance
   spot_price                          = "0.3"

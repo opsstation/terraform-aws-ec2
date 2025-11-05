@@ -51,7 +51,7 @@ module "ec2" {
   instance_count       = 2
   ami                  = "ami-01dd271720c1ba44f"
   instance_type        = "t2.micro"
-  public_key           = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDhO7EpkyvNOP/e8G25GR0n1GkhQrIxxxxxxxxxxxxxxxxxxxxxxxxxxxxGzLTdhEQnGFCFtbg+NPQ== vinod.yadav"
+  public_key           = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDhO7EpkyvNOP/e8G25GR0n1GkhQrIxxxxxxxxxxxxxxxxxxxxxxxxxxxxGzLTdhEQnGFCFtbg+NPQ== opsstation@opsstation"
   subnet_ids           = tolist(module.public_subnets.public_subnet_id)
   iam_instance_profile = module.iam-role.name
 
@@ -92,7 +92,7 @@ module "spot-ec2" {
   ssh_allowed_ports = [22]
 
   #Keypair
-  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDhO7EpkyvNOP/e8G25GR0n1GkhQrIxxxxxxxxxxxxxxxxxxxxxxxxxxxxGzLTdhEQnGFCFtbg+NPQ== vinod.yadav"
+  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDhO7EpkyvNOP/e8G25GR0n1GkhQrIxxxxxxxxxxxxxxxxxxxxxxxxxxxxGzLTdhEQnGFCFtbg+NPQ== opsstation@opsstation"
 
   # Spot-instance
   spot_price                          = "0.3"

@@ -95,7 +95,7 @@ module "ec2" {
   instance_type  = "t2.micro"
 
   #Keypair
-  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDhO7EpxxxxxxxxxxxxxxxxxxxxxxxxkyvNOP/e8TdhEQnGFCFtbg+NPQ== vinod.yadav"
+  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDhO7EpxxxxxxxxxxxxxxxxxxxxxxxxkyvNOP/e8TdhEQnGFCFtbg+NPQ== opsstation@opsstation"
 
   #Networking
   subnet_ids = tolist(module.public_subnets.public_subnet_id)
